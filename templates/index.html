@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Quiz App</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+
+  <body>
+    <div class="sheet">
+      <div class="sheet-head">
+        <span class="badge">🐍 Python</span>
+        <h1>Simple Quiz</h1>
+        <p class="tagline">Answer sheet — mark one bubble per question</p>
+      </div>
+
+      <form id="quizForm"></form>
+
+      <button class="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+
+      <h2 id="result"></h2>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>

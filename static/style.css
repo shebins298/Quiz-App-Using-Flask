@@ -1,0 +1,215 @@
+/* ==========================================================
+   Simple Quiz — "Answer Sheet" theme
+   Styled entirely to match the markup script.js generates:
+     #quizForm > .question > h3 + (label > input[radio] + text)<br>
+   No JS changes needed — every hook here already exists.
+   ========================================================== */
+
+:root{
+  --paper:      #fdfbf3;
+  --paper-line: rgba(47,102,144,0.06);
+  --ink:        #22302b;
+  --muted:      #6b7a72;
+  --red:        #b23a2e;
+  --blue:       #2f6690;
+  --blue-bg:    #eaf2f8;
+  --green:      #2f8f5b;
+  --gold:       #caa036;
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:var(--sans);
+  color:var(--ink);
+  background:
+    radial-gradient(ellipse 700px 400px at 15% -10%, rgba(47,102,144,0.08), transparent 60%),
+    radial-gradient(ellipse 600px 400px at 100% 20%, rgba(202,160,54,0.08), transparent 55%),
+    #f1ece0;
+  padding:40px 20px 70px;
+}
+
+/* ---------- the "answer sheet" paper ---------- */
+.sheet{
+  max-width:640px;
+  margin:0 auto;
+  background:
+    repeating-linear-gradient(
+      var(--paper) 0px, var(--paper) 37px,
+      var(--paper-line) 38px, var(--paper) 39px
+    );
+  border-radius:6px;
+  padding:38px 44px 44px;
+  position:relative;
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.04),
+    0 20px 40px rgba(40,50,45,0.12),
+    0 2px 6px rgba(40,50,45,0.08);
+  transform:rotate(-0.25deg);
+}
+.sheet::before{
+  /* red margin rule, like ruled notebook paper */
+  content:"";
+  position:absolute; top:0; bottom:0; left:56px;
+  width:2px; background:rgba(178,58,46,0.28);
+}
+
+/* ---------- header ---------- */
+.sheet-head{ text-align:center; margin-bottom:30px; padding-left:14px; }
+.badge{
+  display:inline-block; font-family:var(--mono); font-size:.75rem; font-weight:700;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--blue);
+  background:var(--blue-bg); border:1px solid rgba(47,102,144,0.25);
+  padding:4px 12px; border-radius:20px; margin-bottom:14px;
+}
+.sheet-head h1{
+  font-family:var(--serif); font-size:2.1rem; margin:0 0 6px; font-weight:700;
+}
+.sheet-head .tagline{
+  margin:0; color:var(--muted); font-size:.95rem; font-style:italic;
+}
+
+/* ---------- questions (script.js creates div.question) ---------- */
+#quizForm{ counter-reset:qnum; padding-left:14px; }
+
+.question{
+  counter-increment:qnum;
+  counter-reset:opt;
+  position:relative;
+  background:rgba(255,255,255,0.55);
+  border:1px solid rgba(34,48,43,0.1);
+  border-radius:12px;
+  padding:22px 22px 14px 22px;
+  margin:0 0 26px 20px;
+}
+.question::before{
+  content:"Q" counter(qnum);
+  position:absolute; top:-13px; left:-20px;
+  width:44px; height:28px;
+  background:var(--ink); color:var(--paper);
+  border-radius:8px;
+  font-family:var(--mono); font-weight:700; font-size:.78rem;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 3px 8px rgba(0,0,0,0.18);
+  transform:rotate(-3deg);
+}
+
+.question h3{
+  font-family:var(--serif); font-size:1.15rem; font-weight:700;
+  margin:0 0 16px; line-height:1.45;
+}
+
+/* ---------- options styled as OMR answer bubbles ---------- */
+.question label{
+  counter-increment:opt;
+  position:relative;
+  display:flex; align-items:center;
+  min-height:40px;
+  padding:6px 14px 6px 50px;
+  margin:0 0 4px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:background .15s ease;
+  font-size:1rem;
+}
+.question label:hover{ background:rgba(47,102,144,0.07); }
+
+.question label input[type="radio"]{
+  position:absolute; left:8px; top:50%;
+  width:28px; height:28px;
+  margin:0; transform:translateY(-50%);
+  opacity:0; /* invisible but still the real, functioning control */
+  cursor:pointer;
+}
+
+/* the visible bubble: drawn via ::before on the label, lettered via CSS counter */
+.question label::before{
+  content:counter(opt, upper-alpha);
+  position:absolute; left:8px; top:50%; transform:translateY(-50%);
+  width:28px; height:28px;
+  border-radius:50%;
+  border:2px solid var(--ink);
+  background:var(--paper);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-weight:700; font-size:.78rem;
+  transition:all .15s ease;
+}
+
+/* filled-in bubble when its radio is checked */
+.question label:has(input:checked){
+  background:rgba(47,102,144,0.1);
+}
+.question label:has(input:checked)::before{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+  transform:translateY(-50%) scale(1.08);
+}
+
+/* the stray <br> tags script.js inserts between labels — collapse their height */
+.question br{ display:none; }
+
+/* ---------- submit button ---------- */
+.submit-btn{
+  display:block;
+  width:100%;
+  margin:8px 0 26px 20px;
+  max-width:calc(100% - 20px);
+  font-family:var(--mono); font-weight:700; font-size:1.05rem;
+  letter-spacing:.02em;
+  padding:15px 20px;
+  border:none; border-radius:10px;
+  background:var(--ink); color:var(--paper);
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(34,48,43,0.22);
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.submit-btn:hover{ transform:translateY(-2px); box-shadow:0 10px 22px rgba(34,48,43,0.26); }
+.submit-btn:active{ transform:translateY(0); box-shadow:0 4px 10px rgba(34,48,43,0.2); }
+
+/* ---------- result (script.js sets this h2's innerHTML directly) ---------- */
+#result{
+  margin:10px 0 0 20px;
+  min-height:0;
+  font-family:var(--mono);
+  text-align:center;
+}
+#result:empty{ display:none; }
+#result:not(:empty){
+  position:relative;
+  display:inline-block;
+  padding:18px 30px;
+  border:3px solid var(--red);
+  border-radius:50% / 40%;
+  color:var(--red);
+  font-size:1.3rem;
+  font-weight:700;
+  transform:rotate(-4deg);
+  margin-left:calc(50% - 90px + 20px);
+}
+#result:not(:empty)::before{
+  content:"graded";
+  position:absolute; top:-11px; left:50%; transform:translateX(-50%);
+  background:var(--paper);
+  padding:0 8px;
+  font-size:.62rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--red);
+}
+
+@media (max-width:600px){
+  .sheet{ padding:28px 22px 32px; }
+  .sheet::before{ left:32px; }
+  #quizForm, .sheet-head{ padding-left:6px; }
+  .question{ margin-left:10px; padding-left:16px; }
+  .question::before{ left:-12px; }
+  .submit-btn{ margin-left:10px; max-width:calc(100% - 10px); }
+  #result{ margin-left:10px; }
+  #result:not(:empty){ margin-left:0; display:block; }
+}
